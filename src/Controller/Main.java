@@ -4,7 +4,6 @@ import Model.Configuration;
 import Model.Customer;
 import Model.TicketPool;
 import Model.Vendor;
-import View.TicketSystemApp;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -20,24 +19,11 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        //welcome Prompt
+        // CLI mode only
         System.out.println("*****************************************");
         System.out.println("Welcome to the Ticket Management System!");
         System.out.println("*****************************************\n");
 
-        // Ask user if they want to start in CLI or GUI mode
-        System.out.println("Please select your preferred mode CLI or GUI .");
-        System.out.print("Enter 'CLI' or 'GUI': ");
-        String mode = scanner.nextLine().trim().toLowerCase();
-
-        // Ensure valid input
-        while (!mode.equals("cli") && !mode.equals("gui")) {
-            System.out.println("Invalid input. Enter 'CLI' or 'GUI'.");
-            System.out.print("Enter 'CLI' or 'GUI'.");
-            mode = scanner.nextLine().trim().toLowerCase();
-        }
-
-        // Proceed with the configuration loading
         Configuration configuration = getConfig(scanner);
 
         TicketPool ticketPool = new TicketPool(
@@ -48,40 +34,31 @@ public class Main {
         );
 
         boolean isRunning = true;
+        while (isRunning) {
+            System.out.println("\nAvailable Commands:");
+            System.out.println("1. start - Start the ticket operations");
+            System.out.println("2. monitor - View real-time ticket status");
+            System.out.println("3. stop - Stop the program");
+            System.out.print("Enter your command (Type 'start','monitor' or 'stop'): ");
+            String command = scanner.nextLine().trim().toLowerCase();
 
-        if (mode.equals("cli")) {
-            // CLI Mode
-            while (isRunning) {
-                System.out.println("\nAvailable Commands:");
-                System.out.println("1. start - Start the ticket operations");
-                System.out.println("2. monitor - View real-time ticket status");
-                System.out.println("3. stop - Stop the program");
-                System.out.print("Enter your command (Type 'start','monitor' or 'stop'): ");
-
-                String command = scanner.nextLine().trim().toLowerCase();
-
-                switch (command) {
-                    case "start":
-                        executeOperations(configuration, ticketPool);
-                        break;
-                    case "monitor":
-                        displayRealTimeStatus(ticketPool);
-                        break;
-                    case "stop":
-                        System.out.println("Stopping the program...!");
-                        isRunning = false;
-                        break;
-                    default:
-                        System.out.println("Invalid command. Please enter 'start', 'monitor', or 'stop'.");
-                }
+            switch (command) {
+                case "start":
+                    executeOperations(configuration, ticketPool);
+                    break;
+                case "monitor":
+                    displayRealTimeStatus(ticketPool);
+                    break;
+                case "stop":
+                    System.out.println("Stopping the program...!");
+                    isRunning = false;
+                    break;
+                default:
+                    System.out.println("Invalid command. Please enter 'start', 'monitor', or 'stop'.");
             }
-        } else {
-            // GUI Mode (Just an example placeholder)
-            System.out.println("Starting GUI mode...");
-            TicketSystemApp.launch(TicketSystemApp.class);
-
-
         }
+
+        scanner.close();
 
         scanner.close();
     }
